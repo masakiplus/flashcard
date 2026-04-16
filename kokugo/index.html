@@ -43,17 +43,8 @@
     text-align: center;
     margin-bottom: 10px;
   }
-  .header h1 {
-    font-size: 18px;
-    color: #4A3728;
-    font-weight: 700;
-    margin-bottom: 2px;
-  }
-  .header .set-name {
-    font-size: 13px;
-    color: #8B7355;
-    margin-bottom: 6px;
-  }
+  .header h1 { font-size: 18px; color: #4A3728; font-weight: 700; margin-bottom: 2px; }
+  .header .set-name { font-size: 13px; color: #8B7355; margin-bottom: 6px; }
 
   /* ── Character ── */
   .char-area {
@@ -64,10 +55,7 @@
     gap: 10px;
     margin-bottom: 10px;
   }
-  .char-icon {
-    width: 72px;
-    flex-shrink: 0;
-  }
+  .char-icon { width: 72px; flex-shrink: 0; }
   .char-bubble {
     background: white;
     border-radius: 16px 16px 16px 4px;
@@ -79,10 +67,9 @@
     font-weight: 500;
     line-height: 1.5;
     position: relative;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.2s ease;
   }
   .char-bubble.changing { opacity: 0; }
-  /* 吹き出しの三角 */
   .char-bubble::before {
     content: '';
     position: absolute;
@@ -95,24 +82,9 @@
   }
 
   /* ── Progress ── */
-  .progress-wrap {
-    width: 100%;
-    max-width: 480px;
-    margin-bottom: 14px;
-  }
-  .progress-text {
-    font-size: 13px;
-    color: #8B7355;
-    text-align: right;
-    margin-bottom: 4px;
-  }
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #E8DFD3;
-    border-radius: 4px;
-    overflow: hidden;
-  }
+  .progress-wrap { width: 100%; max-width: 480px; margin-bottom: 14px; }
+  .progress-text { font-size: 13px; color: #8B7355; text-align: right; margin-bottom: 4px; }
+  .progress-bar { width: 100%; height: 8px; background: #E8DFD3; border-radius: 4px; overflow: hidden; }
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #7CB342, #558B2F);
@@ -121,12 +93,7 @@
   }
 
   /* ── Card ── */
-  .card-container {
-    width: 100%;
-    max-width: 480px;
-    perspective: 800px;
-    margin-bottom: 16px;
-  }
+  .card-container { width: 100%; max-width: 480px; perspective: 800px; margin-bottom: 16px; }
   .card {
     width: 100%;
     min-height: 220px;
@@ -148,7 +115,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px 24px;
+    padding: 24px;
   }
   .card-front .sentence {
     font-size: 20px;
@@ -172,35 +139,20 @@
     padding: 6px 20px;
     border-radius: 20px;
   }
-
-  .card-back {
-    transform: rotateY(180deg);
-  }
-  .card-back .answer {
-    font-size: 54px;
-    font-weight: 700;
-    color: #3E2C1C;
-    margin-bottom: 6px;
-  }
-  .card-back .reading-small {
-    font-size: 16px;
-    color: #8B7355;
-    margin-bottom: 4px;
-  }
-  .card-back .sentence-small {
-    font-size: 14px;
-    color: #A89580;
-    text-align: center;
-    line-height: 1.6;
+  .card-back { transform: rotateY(180deg); }
+  .card-back .answer { font-size: 54px; font-weight: 700; color: #3E2C1C; margin-bottom: 6px; }
+  .card-back .reading-small { font-size: 16px; color: #8B7355; margin-bottom: 4px; }
+  .card-back .sentence-small { font-size: 14px; color: #A89580; text-align: center; line-height: 1.6; margin-bottom: 10px; }
+  .next-due-label {
+    font-size: 12px;
+    color: #BBA88E;
+    background: #FFF7ED;
+    border-radius: 10px;
+    padding: 3px 10px;
   }
 
   /* ── Buttons ── */
-  .btn-row {
-    display: flex;
-    gap: 14px;
-    width: 100%;
-    max-width: 480px;
-  }
+  .btn-row { display: flex; gap: 14px; width: 100%; max-width: 480px; }
   .btn {
     flex: 1;
     min-height: 52px;
@@ -215,37 +167,16 @@
     justify-content: center;
   }
   .btn:active { transform: scale(0.96); }
-  .btn-again {
-    background: #FFEBEE;
-    color: #C62828;
-    box-shadow: 0 2px 6px rgba(198,40,40,0.12);
-  }
-  .btn-ok {
-    background: #E8F5E9;
-    color: #2E7D32;
-    box-shadow: 0 2px 6px rgba(46,125,50,0.12);
-  }
-  .btn-flip {
-    background: #FFF3E0;
-    color: #E65100;
-    box-shadow: 0 2px 6px rgba(230,81,0,0.12);
-  }
+  .btn-again { background: #FFEBEE; color: #C62828; box-shadow: 0 2px 6px rgba(198,40,40,0.12); }
+  .btn-ok    { background: #E8F5E9; color: #2E7D32; box-shadow: 0 2px 6px rgba(46,125,50,0.12); }
+  .btn-flip  { background: #FFF3E0; color: #E65100; box-shadow: 0 2px 6px rgba(230,81,0,0.12); }
 
-  /* ── Set Selection Screen ── */
+  /* ── Set Selection ── */
   .screen { display: none; width: 100%; max-width: 480px; }
   .screen.active { display: flex; flex-direction: column; align-items: center; }
 
-  /* セット選択画面のキャラクター */
-  .select-char-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  .select-char-area .char-icon-big {
-    width: 90px;
-    margin-bottom: 10px;
-  }
+  .select-char-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; }
+  .select-char-area svg { margin-bottom: 10px; }
   .select-greeting {
     background: white;
     border-radius: 20px;
@@ -257,13 +188,39 @@
     text-align: center;
   }
 
-  .set-list {
+  /* 今日の復習ボタン */
+  .due-btn {
     width: 100%;
+    padding: 16px 20px;
+    background: #FFF3E0;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(230,81,0,0.12);
+    cursor: pointer;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 4px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    transition: transform 0.1s;
+    border: 2px solid #FFCC80;
   }
+  .due-btn:active { transform: scale(0.98); }
+  .due-btn .due-title { font-size: 16px; color: #E65100; font-weight: 700; }
+  .due-btn .due-count-badge {
+    background: #E65100;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 4px 12px;
+  }
+  .due-btn.no-due {
+    background: #F1F8E9;
+    border-color: #C5E1A5;
+    cursor: default;
+  }
+  .due-btn.no-due .due-title { color: #558B2F; }
+
+  .set-list { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
   .set-item {
     width: 100%;
     padding: 16px 20px;
@@ -283,15 +240,22 @@
   .set-item.review-set { background: #FFF8E1; }
   .set-item.review-set .name { color: #B45309; }
 
+  /* 未復習バッジ */
+  .due-badge {
+    display: inline-block;
+    background: #E65100;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 1px 7px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
   /* ── Complete ── */
-  .complete-screen {
-    text-align: center;
-    padding-top: 20px;
-  }
-  .complete-char {
-    width: 100px;
-    margin: 0 auto 12px;
-  }
+  .complete-screen { text-align: center; padding-top: 20px; }
+  .complete-char { width: 100px; margin: 0 auto 12px; }
   .complete-screen h2 { font-size: 26px; color: #2E7D32; margin-bottom: 6px; }
   .complete-screen .complete-msg-txt { font-size: 15px; color: #8B7355; margin-bottom: 8px; }
   .complete-phrase {
@@ -305,57 +269,37 @@
     margin-bottom: 24px;
   }
   .btn-back {
-    background: #FFF3E0;
-    color: #E65100;
-    padding: 14px 36px;
-    border: none;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
+    background: #FFF3E0; color: #E65100;
+    padding: 14px 36px; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; cursor: pointer;
   }
   .btn-retry {
-    background: #E8F5E9;
-    color: #2E7D32;
-    padding: 14px 36px;
-    border: none;
-    border-radius: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 10px;
+    background: #E8F5E9; color: #2E7D32;
+    padding: 14px 36px; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; cursor: pointer; margin-right: 10px;
   }
 </style>
 </head>
 <body>
 
-<!-- ===== うさぎSVG テンプレート（再利用） ===== -->
 <svg style="display:none">
   <symbol id="hana-chan" viewBox="0 0 80 96">
-    <!-- 耳（左）-->
     <ellipse cx="22" cy="26" rx="12" ry="28" fill="white" stroke="#DDBBD0" stroke-width="2"/>
     <ellipse cx="22" cy="26" rx="7" ry="21" fill="#FFB3D0"/>
-    <!-- 耳（右）-->
     <ellipse cx="58" cy="26" rx="12" ry="28" fill="white" stroke="#DDBBD0" stroke-width="2"/>
     <ellipse cx="58" cy="26" rx="7" ry="21" fill="#FFB3D0"/>
-    <!-- 顔 -->
     <circle cx="40" cy="65" r="30" fill="white" stroke="#DDBBD0" stroke-width="2"/>
-    <!-- 目（左）-->
     <circle cx="28" cy="59" r="8" fill="#F48FB1"/>
     <circle cx="28" cy="58" r="5" fill="white"/>
     <circle cx="29" cy="57" r="2.5" fill="#3E2C1C"/>
     <circle cx="30" cy="56" r="1" fill="white"/>
-    <!-- 目（右）-->
     <circle cx="52" cy="59" r="8" fill="#F48FB1"/>
     <circle cx="52" cy="58" r="5" fill="white"/>
     <circle cx="53" cy="57" r="2.5" fill="#3E2C1C"/>
     <circle cx="54" cy="56" r="1" fill="white"/>
-    <!-- ほっぺ -->
     <circle cx="17" cy="68" r="8" fill="#FFB3D0" opacity="0.65"/>
     <circle cx="63" cy="68" r="8" fill="#FFB3D0" opacity="0.65"/>
-    <!-- 鼻 -->
     <ellipse cx="40" cy="68" rx="5" ry="3.5" fill="#F48FB1"/>
-    <!-- 口 -->
     <path d="M34 74 Q40 80 46 74" stroke="#C06080" stroke-width="2" fill="none" stroke-linecap="round"/>
     <path d="M40 68 L40 74" stroke="#C06080" stroke-width="1.5" fill="none"/>
   </symbol>
@@ -364,15 +308,12 @@
 <!-- ===== Set Selection Screen ===== -->
 <div id="select-screen" class="screen active">
   <div class="back-link"><a href="../">← 科目選択に戻る</a></div>
-  <div class="header">
-    <h1>SAPIX 漢字フラッシュカード</h1>
-  </div>
+  <div class="header"><h1>SAPIX 漢字フラッシュカード</h1></div>
   <div class="select-char-area">
-    <div class="char-icon-big">
-      <svg viewBox="0 0 80 96" width="90" height="108"><use href="#hana-chan"/></svg>
-    </div>
-    <div class="select-greeting">セットを選んでね！🌸</div>
+    <svg viewBox="0 0 80 96" width="88" height="106"><use href="#hana-chan"/></svg>
+    <div class="select-greeting" id="select-greeting">セットを選んでね！🌸</div>
   </div>
+  <div id="due-area"></div>
   <div id="set-list" class="set-list"></div>
 </div>
 
@@ -382,15 +323,12 @@
     <h1>SAPIX 漢字フラッシュカード</h1>
     <p id="current-set-name" class="set-name"></p>
   </div>
-
-  <!-- キャラクター + 吹き出し -->
   <div class="char-area">
     <div class="char-icon">
       <svg viewBox="0 0 80 96" width="72" height="86"><use href="#hana-chan"/></svg>
     </div>
     <div class="char-bubble" id="char-bubble">これ、わかるかな〜？✨</div>
   </div>
-
   <div class="progress-wrap">
     <div class="progress-text"><span id="progress-num">0</span> / <span id="progress-total">0</span></div>
     <div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
@@ -405,6 +343,7 @@
         <div id="back-answer" class="answer"></div>
         <div id="back-reading" class="reading-small"></div>
         <div id="back-sentence" class="sentence-small"></div>
+        <div id="next-due-label" class="next-due-label" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -440,80 +379,138 @@ const CARD_SETS = [
     name: "2026年4月 第3週",
     isReview: false,
     cards: [
-      { sentence: "____をもって最後までやりとげる",       reading: "せきにん",      answer: "責任"   },
-      { sentence: "家の庭に大きな____がある",             reading: "いし",          answer: "石"     },
-      { sentence: "テニスの____で優勝をめざす",           reading: "たいかい",      answer: "大会"   },
-      { sentence: "____の国々の文化を学ぶ",               reading: "せかい",        answer: "世界"   },
-      { sentence: "博物館で恐竜の____を見た",             reading: "かせき",        answer: "化石"   },
+      { sentence: "____をもって最後までやりとげる",       reading: "せきにん",       answer: "責任"   },
+      { sentence: "家の庭に大きな____がある",             reading: "いし",           answer: "石"     },
+      { sentence: "テニスの____で優勝をめざす",           reading: "たいかい",       answer: "大会"   },
+      { sentence: "____の国々の文化を学ぶ",               reading: "せかい",         answer: "世界"   },
+      { sentence: "博物館で恐竜の____を見た",             reading: "かせき",         answer: "化石"   },
       { sentence: "____を計画的にすごす",                 reading: "いっしゅうかん", answer: "一週間"  },
-      { sentence: "バットでボールを力強く____",           reading: "うつ",          answer: "打つ"   },
-      { sentence: "コップに____を入れて飲み物を冷やす",   reading: "こおり",        answer: "氷"     },
-      { sentence: "____歩道で道路を安全にわたる",         reading: "おうだん",      answer: "横断"   },
-      { sentence: "明日の天気を____する",                 reading: "よそう",        answer: "予想"   },
-      { sentence: "友だちとの____を守る",                 reading: "やくそく",      answer: "約束"   },
-      { sentence: "新学期が始まって気持ちを____にする",   reading: "あらた",        answer: "新た"   }
+      { sentence: "バットでボールを力強く____",           reading: "うつ",           answer: "打つ"   },
+      { sentence: "コップに____を入れて飲み物を冷やす",   reading: "こおり",         answer: "氷"     },
+      { sentence: "____歩道で道路を安全にわたる",         reading: "おうだん",       answer: "横断"   },
+      { sentence: "明日の天気を____する",                 reading: "よそう",         answer: "予想"   },
+      { sentence: "友だちとの____を守る",                 reading: "やくそく",       answer: "約束"   },
+      { sentence: "新学期が始まって気持ちを____にする",   reading: "あらた",         answer: "新た"   }
     ]
   },
   {
     name: "復習：まちがえた問題",
     isReview: true,
     cards: [
-      // うでだめし1 まちがえた漢字
-      { sentence: "____に役立つ人になりたい",             reading: "よ",            answer: "世"     },
-      { sentence: "広い世____を旅する",                   reading: "かい",          answer: "界"     },
-      { sentence: "犬の____は高い",                       reading: "はな",          answer: "鼻"     },
-      { sentence: "お礼の____ものを贈る",                 reading: "しな",          answer: "品"     },
-      // うでだめし3 本問（間違えた漢字に赤丸）
-      { sentence: "遠足の____を確かめる",                 reading: "もちもの",      answer: "持ち物"  },
-      { sentence: "____が真っ青になる",                   reading: "がんめん",      answer: "顔面"   },
-      { sentence: "____な食べ方をしてはいけない",         reading: "げひん",        answer: "下品"   },
-      { sentence: "たぬきが人を____",                     reading: "ばかす",        answer: "化かす"  },
-      { sentence: "____お茶を飲む",                       reading: "あたたかい",    answer: "温かい"  },
-      { sentence: "____に汗をかく",                       reading: "はなさき",      answer: "鼻先"   },
-      // うでだめし3 まちがえた漢字
-      { sentence: "北極の____が減少する",                 reading: "かいひょう",    answer: "海氷"   },
-      { sentence: "立身____の願いを込める",               reading: "しゅっせ",      answer: "出世"   },
-      { sentence: "____文を読む",                         reading: "ものがたり",    answer: "物語"   },
-      { sentence: "座る____を探す",                       reading: "ばしょ",        answer: "場所"   },
-      { sentence: "____の成り立ちを知る",                 reading: "かんじ",        answer: "漢字"   }
+      { sentence: "____に役立つ人になりたい",             reading: "よ",             answer: "世"     },
+      { sentence: "広い世____を旅する",                   reading: "かい",           answer: "界"     },
+      { sentence: "犬の____は高い",                       reading: "はな",           answer: "鼻"     },
+      { sentence: "お礼の____ものを贈る",                 reading: "しな",           answer: "品"     },
+      { sentence: "遠足の____を確かめる",                 reading: "もちもの",       answer: "持ち物"  },
+      { sentence: "____が真っ青になる",                   reading: "がんめん",       answer: "顔面"   },
+      { sentence: "____な食べ方をしてはいけない",         reading: "げひん",         answer: "下品"   },
+      { sentence: "たぬきが人を____",                     reading: "ばかす",         answer: "化かす"  },
+      { sentence: "____お茶を飲む",                       reading: "あたたかい",     answer: "温かい"  },
+      { sentence: "____に汗をかく",                       reading: "はなさき",       answer: "鼻先"   },
+      { sentence: "北極の____が減少する",                 reading: "かいひょう",     answer: "海氷"   },
+      { sentence: "立身____の願いを込める",               reading: "しゅっせ",       answer: "出世"   },
+      { sentence: "____文を読む",                         reading: "ものがたり",     answer: "物語"   },
+      { sentence: "座る____を探す",                       reading: "ばしょ",         answer: "場所"   },
+      { sentence: "____の成り立ちを知る",                 reading: "かんじ",         answer: "漢字"   }
     ]
   }
 ];
 
-// ── セリフパターン ──
+// ─────────────────────────────────────────
+// SM-2 アルゴリズム
+// ─────────────────────────────────────────
+// state: { ef, interval, rep, dueDate }
+// correct: true=覚えた(q=4) / false=もう一回(q=1)
+function sm2Update(state, correct) {
+  var q = correct ? 4 : 1;
+  if (!state) state = { ef: 2.5, interval: 0, rep: 0, dueDate: 0 };
+
+  if (q < 3) {
+    // 不正解：インターバルをリセット
+    state.rep = 0;
+    state.interval = 1;
+  } else {
+    // 正解：インターバルを伸ばす
+    if      (state.rep === 0) state.interval = 1;
+    else if (state.rep === 1) state.interval = 6;
+    else                       state.interval = Math.round(state.interval * state.ef);
+    state.rep += 1;
+    // EF更新（最小1.3）
+    var newEf = state.ef + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+    state.ef = Math.max(1.3, newEf);
+  }
+
+  // 次回復習日 = 今日の00:00 + interval日
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  state.dueDate = today.getTime() + state.interval * 86400000;
+  return state;
+}
+
+// ─────────────────────────────────────────
+// localStorage ユーティリティ
+// ─────────────────────────────────────────
+var LS_PREFIX = 'sapix_fc_';
+
+function cardId(setIdx, cardIdx) {
+  return LS_PREFIX + setIdx + '_' + cardIdx;
+}
+
+function loadState(id) {
+  try {
+    var raw = localStorage.getItem(id);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function saveState(id, state) {
+  try { localStorage.setItem(id, JSON.stringify(state)); } catch(e) {}
+}
+
+// ─────────────────────────────────────────
+// 復習スケジュール計算
+// ─────────────────────────────────────────
+function isDue(id) {
+  var st = loadState(id);
+  if (!st) return true; // 未学習 = 今日やるべき
+  return st.dueDate <= Date.now();
+}
+
+function getDueCards() {
+  var result = [];
+  CARD_SETS.forEach(function(set, si) {
+    set.cards.forEach(function(card, ci) {
+      var id = cardId(si, ci);
+      if (isDue(id)) result.push({ card: card, id: id });
+    });
+  });
+  return result;
+}
+
+function countDueForSet(si) {
+  var count = 0;
+  CARD_SETS[si].cards.forEach(function(_, ci) {
+    if (isDue(cardId(si, ci))) count++;
+  });
+  return count;
+}
+
+function intervalLabel(interval) {
+  if (interval === 1)  return '次回：明日';
+  if (interval < 30)   return '次回：' + interval + '日後';
+  var m = Math.round(interval / 30);
+  return '次回：約' + m + 'ヶ月後';
+}
+
+// ─────────────────────────────────────────
+// セリフパターン
+// ─────────────────────────────────────────
 const PHRASES = {
-  question: [
-    'これ、わかるかな〜？✨',
-    'さあ、挑戦だよ！💪',
-    'ヒントをよく見てね！',
-    '読めるかな？🌟',
-    'がんばって！'
-  ],
-  answer: [
-    'どうだった？正直に！',
-    '覚えてた？',
-    '答えを確認しよう！',
-    'さあ、どっち？'
-  ],
-  ok: [
-    'やったね！🎉',
-    '完璧！✨',
-    'すごい！さすが！',
-    '正解！🌟',
-    'ばっちり！'
-  ],
-  again: [
-    'もう少しだよ！💪',
-    '一緒に練習しよう！',
-    '次は覚えようね！',
-    '繰り返しが大事！'
-  ],
-  complete: [
-    'よくがんばったね！🌟',
-    '全問正解！さすが！🎊',
-    '完璧だよ！すごい！✨',
-    '100点満点！🎉'
-  ]
+  question: ['これ、わかるかな〜？✨', 'さあ、挑戦だよ！💪', 'ヒントをよく見てね！', '読めるかな？🌟', 'がんばって！'],
+  answer:   ['どうだった？正直に！', '覚えてた？', 'さあ、どっち？'],
+  ok:       ['やったね！🎉', '完璧！✨', 'すごい！さすが！', '正解！🌟', 'ばっちり！'],
+  again:    ['もう少しだよ！💪', '一緒に練習しよう！', '次は覚えようね！', '繰り返しが大事！'],
+  complete: ['よくがんばったね！🌟', '全問正解！さすが！🎊', '完璧だよ！すごい！✨', '100点満点！🎉']
 };
 
 function randPhrase(type) {
@@ -530,14 +527,16 @@ function setPhrase(type) {
   }, 120);
 }
 
-// ── State ──
-var currentSetIndex = -1;
-var deck = [];
+// ─────────────────────────────────────────
+// State
+// ─────────────────────────────────────────
+var currentSetIndex = -1; // -1 = 今日の復習モード
+var deck    = [];          // カードオブジェクト
+var deckIds = [];          // 対応するlocalStorageキー
 var done = 0;
 var totalCards = 0;
 var isFlipped = false;
 
-// ── Screens ──
 var $select   = document.getElementById('select-screen');
 var $quiz     = document.getElementById('quiz-screen');
 var $complete = document.getElementById('complete-screen');
@@ -547,17 +546,42 @@ function showScreen(el) {
   el.classList.add('active');
 }
 
-// ── Set Selection ──
+// ─────────────────────────────────────────
+// セット選択画面
+// ─────────────────────────────────────────
 function renderSetList() {
+  // 今日の復習エリア
+  var dueArea = document.getElementById('due-area');
+  var dueCards = getDueCards();
+  var totalDue = dueCards.length;
+
+  if (totalDue > 0) {
+    dueArea.innerHTML =
+      '<div class="due-btn" onclick="startDueMode()">' +
+        '<div class="due-title">📅 今日の復習</div>' +
+        '<div class="due-count-badge">' + totalDue + '枚</div>' +
+      '</div>';
+    document.getElementById('select-greeting').textContent = '今日は' + totalDue + '枚復習しよう！📚';
+  } else {
+    dueArea.innerHTML =
+      '<div class="due-btn no-due">' +
+        '<div class="due-title">✅ 今日の復習はなし！</div>' +
+      '</div>';
+    document.getElementById('select-greeting').textContent = 'よくできてるね！🌸';
+  }
+
+  // セット一覧
   var list = document.getElementById('set-list');
   list.innerHTML = '';
   CARD_SETS.forEach(function(set, i) {
+    var due = countDueForSet(i);
+    var dueBadge = due > 0 ? '<span class="due-badge">' + due + '</span>' : '';
+    var badge = set.isReview ? '⚠️ 復習' : '📖 通常';
     var div = document.createElement('div');
     div.className = 'set-item' + (set.isReview ? ' review-set' : '');
-    var badge = set.isReview ? '⚠️ 復習' : '📖 通常';
     div.innerHTML =
       '<div>' +
-        '<div class="name">' + set.name + '</div>' +
+        '<div class="name">' + set.name + dueBadge + '</div>' +
         '<div class="meta">' + badge + '　' + set.cards.length + '問</div>' +
       '</div>' +
       '<div class="arrow">▶</div>';
@@ -566,40 +590,63 @@ function renderSetList() {
   });
 }
 
-// ── Shuffle (Fisher-Yates) ──
-function shuffle(arr) {
-  for (var i = arr.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-  }
-  return arr;
+// ─────────────────────────────────────────
+// 今日の復習モード（全セット横断）
+// ─────────────────────────────────────────
+function startDueMode() {
+  var dueCards = getDueCards();
+  if (dueCards.length === 0) return;
+
+  currentSetIndex = -1;
+  document.getElementById('current-set-name').textContent = '今日の復習';
+  totalCards = dueCards.length;
+  done = 0;
+
+  var shuffled = shuffle(dueCards.slice());
+  deck    = shuffled.map(function(d) { return d.card; });
+  deckIds = shuffled.map(function(d) { return d.id; });
+
+  showScreen($quiz);
+  showCard();
 }
 
-// ── Start a Set ──
+// ─────────────────────────────────────────
+// セット開始
+// ─────────────────────────────────────────
 function startSet(idx) {
   currentSetIndex = idx;
   var set = CARD_SETS[idx];
   document.getElementById('current-set-name').textContent = set.name;
   totalCards = set.cards.length;
   done = 0;
-  deck = shuffle(set.cards.slice());
+
+  // シャッフル（インデックスを経由してIDも並べ替える）
+  var indices = set.cards.map(function(_, ci) { return ci; });
+  shuffle(indices);
+  deck    = indices.map(function(ci) { return set.cards[ci]; });
+  deckIds = indices.map(function(ci) { return cardId(idx, ci); });
+
   showScreen($quiz);
   showCard();
 }
 
-function retrySet() { startSet(currentSetIndex); }
-function goHome()   { showScreen($select); }
+function retrySet() {
+  if (currentSetIndex >= 0) startSet(currentSetIndex);
+  else startDueMode();
+}
+function goHome() { renderSetList(); showScreen($select); }
 
-// ── Card Display ──
+// ─────────────────────────────────────────
+// カード表示
+// ─────────────────────────────────────────
 function showCard() {
   if (deck.length === 0) {
-    var phrase = randPhrase('complete');
-    document.getElementById('complete-phrase').textContent = phrase;
-    document.getElementById('complete-msg').textContent =
-      totalCards + '問すべて覚えました！';
+    document.getElementById('complete-phrase').textContent = randPhrase('complete');
+    document.getElementById('complete-msg').textContent = totalCards + '問すべて覚えました！';
     showScreen($complete);
     return;
   }
+
   isFlipped = false;
   var card = document.getElementById('card');
   var wasFlipped = card.classList.contains('flipped');
@@ -608,18 +655,24 @@ function showCard() {
   document.getElementById('front-sentence').innerHTML =
     c.sentence.replace('____', '<span class="blank">&nbsp;</span>');
   document.getElementById('front-reading').textContent = c.reading;
+  document.getElementById('next-due-label').style.display = 'none';
 
   document.getElementById('btn-flip-row').style.display = 'flex';
   document.getElementById('btn-judge-row').style.display = 'none';
-
   updateProgress();
   setPhrase('question');
 
   function setBackContent() {
     document.getElementById('back-answer').textContent = c.answer;
     document.getElementById('back-reading').textContent = c.reading;
-    document.getElementById('back-sentence').textContent =
-      c.sentence.replace('____', c.answer);
+    document.getElementById('back-sentence').textContent = c.sentence.replace('____', c.answer);
+    // 現在のスケジュール状態を表示（次回復習日）
+    var st = loadState(deckIds[0]);
+    if (st && st.interval > 0) {
+      var label = document.getElementById('next-due-label');
+      label.textContent = intervalLabel(st.interval);
+      label.style.display = 'inline-block';
+    }
   }
 
   if (wasFlipped) {
@@ -643,17 +696,49 @@ function flipCard() {
   setPhrase('answer');
 }
 
+// ─────────────────────────────────────────
+// 答え合わせ & SM-2更新
+// ─────────────────────────────────────────
 function judgeCard(ok) {
-  setPhrase(ok ? 'ok' : 'again');
+  // SM-2でカード状態を更新して保存
+  var id = deckIds[0];
+  var newState = sm2Update(loadState(id), ok);
+  saveState(id, newState);
+
+  // 次回復習日を吹き出しに表示
+  var bubble = document.getElementById('char-bubble');
+  bubble.textContent = ok
+    ? randPhrase('ok') + '　' + intervalLabel(newState.interval)
+    : randPhrase('again') + '　' + intervalLabel(newState.interval);
+
+  // next-due-labelを即時更新
+  var label = document.getElementById('next-due-label');
+  label.textContent = intervalLabel(newState.interval);
+  label.style.display = 'inline-block';
+
   var current = deck.shift();
+  deckIds.shift();
+
   if (ok) {
     done++;
   } else {
     var insertAt = Math.min(2, deck.length);
     deck.splice(insertAt, 0, current);
+    deckIds.splice(insertAt, 0, id);
   }
-  // セリフを少し見せてから次のカードへ
-  setTimeout(showCard, 600);
+
+  setTimeout(showCard, 700);
+}
+
+// ─────────────────────────────────────────
+// ユーティリティ
+// ─────────────────────────────────────────
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
 }
 
 function updateProgress() {
@@ -663,7 +748,9 @@ function updateProgress() {
   document.getElementById('progress-fill').style.width = pct + '%';
 }
 
-// ── Init ──
+// ─────────────────────────────────────────
+// 初期化
+// ─────────────────────────────────────────
 renderSetList();
 </script>
 </body>
