@@ -1,39 +1,47 @@
-# SAPIX 漢字フラッシュカード
+# SAPIX フラッシュカード
 
-SAPIX 国語の漢字練習用フラッシュカードアプリ。GitHub Pages で公開中。
+SAPIX の学習用フラッシュカードアプリ。GitHub Pages で公開中。
 
-**公開URL**: https://masakiplus.github.io/kanji-flashcard/
+**公開URL**: https://masakiplus.github.io/flashcard/
+
+## 科目
+
+| 科目 | URL | 内容 |
+|------|-----|------|
+| 国語 | `/kokugo/` | 漢字フラッシュカード（SM-2忘却曲線） |
+| 算数 | `/sansu/` | 計算フラッシュカード（SM-2忘却曲線） |
 
 ## 特徴
 
-- 外部依存ゼロの単一 HTML ファイル
+- 外部依存ゼロの単一 HTML ファイル（科目ごと）
 - スマートフォン対応（タップ操作）
 - キャラクター「ハナちゃん」がクイズを出す
-- 覚えた・もう一回 の 2 択で学習進捗を管理
-- 間違えたカードはデッキに戻って繰り返し出題
-
-## カードセット
-
-| セット | 問数 | 内容 |
-|--------|------|------|
-| 2026年4月 第3週 | 12問 | 通常の週次カード |
-| 復習：まちがえた問題 | 15問 | うでだめし1・3で間違えた問題 |
+- SM-2アルゴリズムによる忘却曲線スケジューリング
+- 「今日の復習」で期限到来カードをまとめて出題
+- 学習データは localStorage に永続保存
 
 ## 問題の追加方法
 
-`index.html` 内の `CARD_SETS` 配列にオブジェクトを追加する。
+各科目の `index.html` 内の `CARD_SETS` 配列にオブジェクトを追加する。
 
 ```javascript
+// 国語（kokugo/index.html）
 {
   name: "セット名",
-  isReview: false,   // 復習セットなら true
+  isReview: false,
   cards: [
     { sentence: "____に役立つ人になりたい", reading: "よ", answer: "世" },
-    // sentence: ____ が空欄になる問題文
-    // reading:  ひらがなのヒント
-    // answer:   正解の漢字
+  ]
+}
+
+// 算数（sansu/index.html）
+{
+  name: "セット名",
+  isReview: false,
+  cards: [
+    { sentence: "640 − 158 + 36 = ____", reading: "3項→筆算2段", answer: "518" },
   ]
 }
 ```
 
-追加後は `index.html` を commit して push するだけで自動的に公開される。
+追加後は commit して push するだけで自動的に公開される。
