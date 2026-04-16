@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SAPIX 算数フラッシュカード</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    background: #F0F4FF;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── Back link ── */
+  .back-link { width: 100%; max-width: 480px; margin-bottom: 6px; }
+  .back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #90A4C0;
+    text-decoration: none;
+    padding: 4px 0;
+  }
+  .back-link a:active { opacity: 0.6; }
+
+  /* ── Header ── */
+  .header { width: 100%; max-width: 480px; text-align: center; margin-bottom: 10px; }
+  .header h1 { font-size: 18px; color: #1A2F5E; font-weight: 700; margin-bottom: 2px; }
+  .header .set-name { font-size: 13px; color: #5573A0; margin-bottom: 6px; }
+
+  /* ── Character ── */
+  .char-area {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .char-icon { width: 72px; flex-shrink: 0; }
+  .char-bubble {
+    background: white;
+    border-radius: 16px 16px 16px 4px;
+    padding: 11px 15px;
+    font-size: 14px;
+    color: #1A2F5E;
+    box-shadow: 0 2px 10px rgba(26,47,94,0.12);
+    flex: 1;
+    font-weight: 500;
+    line-height: 1.5;
+    position: relative;
+    transition: opacity 0.2s ease;
+  }
+  .char-bubble.changing { opacity: 0; }
+  .char-bubble::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    bottom: 14px;
+    border: 9px solid transparent;
+    border-right-color: white;
+    border-left: none;
+    filter: drop-shadow(-2px 1px 2px rgba(26,47,94,0.08));
+  }
+
+  /* ── Progress ── */
+  .progress-wrap { width: 100%; max-width: 480px; margin-bottom: 14px; }
+  .progress-text { font-size: 13px; color: #5573A0; text-align: right; margin-bottom: 4px; }
+  .progress-bar { width: 100%; height: 8px; background: #C5D5EE; border-radius: 4px; overflow: hidden; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #42A5F5, #1565C0);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Card ── */
+  .card-container { width: 100%; max-width: 480px; perspective: 800px; margin-bottom: 16px; }
+  .card {
+    width: 100%;
+    min-height: 220px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(26,47,94,0.10), 0 1px 3px rgba(26,47,94,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  /* 表面：問題式 */
+  .card-front .sentence {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.8;
+    color: #1A2F5E;
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: 0.03em;
+  }
+  .card-front .sentence .blank {
+    display: inline-block;
+    border-bottom: 3px solid #1976D2;
+    min-width: 2.5em;
+    margin: 0 2px;
+    vertical-align: baseline;
+  }
+  /* ヒント（readingを流用） */
+  .card-front .reading {
+    font-size: 13px;
+    color: #1565C0;
+    font-weight: 500;
+    background: #E3F2FD;
+    padding: 5px 14px;
+    border-radius: 16px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* 裏面：答え */
+  .card-back { transform: rotateY(180deg); }
+  .card-back .answer {
+    font-size: 52px;
+    font-weight: 700;
+    color: #1A2F5E;
+    margin-bottom: 8px;
+  }
+  .card-back .reading-small {
+    font-size: 13px;
+    color: #5573A0;
+    margin-bottom: 8px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .card-back .sentence-small {
+    font-size: 14px;
+    color: #7090B0;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .next-due-label {
+    font-size: 12px;
+    color: #7090B0;
+    background: #E3F2FD;
+    border-radius: 10px;
+    padding: 3px 10px;
+  }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 14px; width: 100%; max-width: 480px; }
+  .btn {
+    flex: 1;
+    min-height: 52px;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-again { background: #FFEBEE; color: #C62828; box-shadow: 0 2px 6px rgba(198,40,40,0.12); }
+  .btn-ok    { background: #E8F5E9; color: #2E7D32; box-shadow: 0 2px 6px rgba(46,125,50,0.12); }
+  .btn-flip  { background: #E3F2FD; color: #1565C0; box-shadow: 0 2px 6px rgba(21,101,192,0.12); }
+
+  /* ── Set Selection ── */
+  .screen { display: none; width: 100%; max-width: 480px; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; }
+
+  .select-char-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; }
+  .select-char-area svg { margin-bottom: 10px; }
+  .select-greeting {
+    background: white;
+    border-radius: 20px;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1A2F5E;
+    box-shadow: 0 2px 10px rgba(26,47,94,0.12);
+    text-align: center;
+  }
+
+  /* 今日の復習ボタン */
+  .due-btn {
+    width: 100%;
+    padding: 16px 20px;
+    background: #E3F2FD;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.12);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    transition: transform 0.1s;
+    border: 2px solid #90CAF9;
+  }
+  .due-btn:active { transform: scale(0.98); }
+  .due-btn .due-title { font-size: 16px; color: #1565C0; font-weight: 700; }
+  .due-btn .due-count-badge {
+    background: #1565C0;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 4px 12px;
+  }
+  .due-btn.no-due { background: #F1F8E9; border-color: #C5E1A5; cursor: default; }
+  .due-btn.no-due .due-title { color: #558B2F; }
+
+  .set-list { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .set-item {
+    width: 100%;
+    padding: 16px 20px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 1px 6px rgba(26,47,94,0.08);
+    cursor: pointer;
+    transition: transform 0.1s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .set-item:active { transform: scale(0.98); }
+  .set-item .name { font-size: 16px; color: #1A2F5E; font-weight: 600; }
+  .set-item .meta { font-size: 13px; color: #5573A0; margin-top: 2px; }
+  .set-item .arrow { font-size: 18px; color: #42A5F5; }
+  .set-item.review-set { background: #FFF8E1; }
+  .set-item.review-set .name { color: #B45309; }
+  .due-badge {
+    display: inline-block;
+    background: #1565C0;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 1px 7px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* ── Complete ── */
+  .complete-screen { text-align: center; padding-top: 20px; }
+  .complete-char { width: 100px; margin: 0 auto 12px; }
+  .complete-screen h2 { font-size: 26px; color: #1565C0; margin-bottom: 6px; }
+  .complete-screen .complete-msg-txt { font-size: 15px; color: #5573A0; margin-bottom: 8px; }
+  .complete-phrase {
+    font-size: 18px; font-weight: 600; color: #1565C0;
+    background: white; border-radius: 16px; padding: 12px 20px;
+    box-shadow: 0 2px 8px rgba(26,47,94,0.10); margin-bottom: 24px;
+  }
+  .btn-back {
+    background: #E3F2FD; color: #1565C0;
+    padding: 14px 36px; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+  }
+  .btn-retry {
+    background: #E8F5E9; color: #2E7D32;
+    padding: 14px 36px; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; cursor: pointer; margin-right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<svg style="display:none">
+  <symbol id="hana-chan" viewBox="0 0 80 96">
+    <ellipse cx="22" cy="26" rx="12" ry="28" fill="white" stroke="#AABBD4" stroke-width="2"/>
+    <ellipse cx="22" cy="26" rx="7" ry="21" fill="#90CAF9"/>
+    <ellipse cx="58" cy="26" rx="12" ry="28" fill="white" stroke="#AABBD4" stroke-width="2"/>
+    <ellipse cx="58" cy="26" rx="7" ry="21" fill="#90CAF9"/>
+    <circle cx="40" cy="65" r="30" fill="white" stroke="#AABBD4" stroke-width="2"/>
+    <circle cx="28" cy="59" r="8" fill="#64B5F6"/>
+    <circle cx="28" cy="58" r="5" fill="white"/>
+    <circle cx="29" cy="57" r="2.5" fill="#1A2F5E"/>
+    <circle cx="30" cy="56" r="1" fill="white"/>
+    <circle cx="52" cy="59" r="8" fill="#64B5F6"/>
+    <circle cx="52" cy="58" r="5" fill="white"/>
+    <circle cx="53" cy="57" r="2.5" fill="#1A2F5E"/>
+    <circle cx="54" cy="56" r="1" fill="white"/>
+    <circle cx="17" cy="68" r="8" fill="#90CAF9" opacity="0.65"/>
+    <circle cx="63" cy="68" r="8" fill="#90CAF9" opacity="0.65"/>
+    <ellipse cx="40" cy="68" rx="5" ry="3.5" fill="#64B5F6"/>
+    <path d="M34 74 Q40 80 46 74" stroke="#1565C0" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M40 68 L40 74" stroke="#1565C0" stroke-width="1.5" fill="none"/>
+  </symbol>
+</svg>
+
+<!-- ===== Set Selection ===== -->
+<div id="select-screen" class="screen active">
+  <div class="back-link"><a href="../">← 科目選択に戻る</a></div>
+  <div class="header"><h1>SAPIX 算数フラッシュカード</h1></div>
+  <div class="select-char-area">
+    <svg viewBox="0 0 80 96" width="88" height="106"><use href="#hana-chan"/></svg>
+    <div class="select-greeting" id="select-greeting">セットを選んでね！🔢</div>
+  </div>
+  <div id="due-area"></div>
+  <div id="set-list" class="set-list"></div>
+</div>
+
+<!-- ===== Quiz Screen ===== -->
+<div id="quiz-screen" class="screen">
+  <div class="header">
+    <h1>SAPIX 算数フラッシュカード</h1>
+    <p id="current-set-name" class="set-name"></p>
+  </div>
+  <div class="char-area">
+    <div class="char-icon">
+      <svg viewBox="0 0 80 96" width="72" height="86"><use href="#hana-chan"/></svg>
+    </div>
+    <div class="char-bubble" id="char-bubble">この式、解けるかな？🔢</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-text"><span id="progress-num">0</span> / <span id="progress-total">0</span></div>
+    <div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="card-container">
+    <div id="card" class="card" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div id="front-sentence" class="sentence"></div>
+        <div id="front-reading" class="reading"></div>
+      </div>
+      <div class="card-face card-back">
+        <div id="back-answer" class="answer"></div>
+        <div id="back-reading" class="reading-small"></div>
+        <div id="back-sentence" class="sentence-small"></div>
+        <div id="next-due-label" class="next-due-label" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+  <div id="btn-flip-row" class="btn-row">
+    <button class="btn btn-flip" onclick="flipCard()">こたえを見る</button>
+  </div>
+  <div id="btn-judge-row" class="btn-row" style="display:none;">
+    <button class="btn btn-again" onclick="judgeCard(false)">もう一回</button>
+    <button class="btn btn-ok" onclick="judgeCard(true)">わかった！</button>
+  </div>
+</div>
+
+<!-- ===== Complete Screen ===== -->
+<div id="complete-screen" class="screen complete-screen">
+  <div class="complete-char">
+    <svg viewBox="0 0 80 96" width="100" height="120"><use href="#hana-chan"/></svg>
+  </div>
+  <h2>全問クリア！🎉</h2>
+  <p class="complete-msg-txt" id="complete-msg"></p>
+  <div class="complete-phrase" id="complete-phrase">よくがんばったね！🌟</div>
+  <div>
+    <button class="btn-retry" onclick="retrySet()">もう一回やる</button>
+    <button class="btn-back" onclick="goHome()">セット選択に戻る</button>
+  </div>
+</div>
+
+<script>
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  カードデータ                                                ║
+// ║  sentence: 問題文（____が答えの箇所）                       ║
+// ║  reading:  ヒント（解き方のポイント）                       ║
+// ║  answer:   正解                                              ║
+// ╚══════════════════════════════════════════════════════════════╝
+const CARD_SETS = [
+  {
+    name: "復習ドリル（5類型）",
+    isReview: false,
+    cards: [
+      // A. 3項以上の連続計算
+      {
+        sentence:  "640 − 158 + 36 = ____",
+        reading:   "3項以上 → 筆算を2段書く！消さずに残す",
+        answer:    "518"
+      },
+      {
+        sentence:  "700 − 98 − 98 − 98 − 4 = ____",
+        reading:   "98が3つ → 98×3=294 をまとめて引く",
+        answer:    "402"
+      },
+      // B. 同数加算
+      {
+        sentence:  "16 + 16 + 16 + 16 + 16 = ____",
+        reading:   "同じ数の足し算 → かけ算！ 16×5",
+        answer:    "80"
+      },
+      // C. ±1 ケアレス
+      {
+        sentence:  "120 − 68 − ____ = 25",
+        reading:   "まず 120−68=52、次に 52−□=25",
+        answer:    "27"
+      },
+      // D. 文章題・符号混在
+      {
+        sentence:  "バスに42人。□人おりて3人のった。今23人。おりたのは？",
+        reading:   "42 − □ + 3 = 23　→　矢印図を書く！",
+        answer:    "22人"
+      },
+      {
+        sentence:  "あめ48こ。□こ食べて14こもらって39こ。食べたのは？",
+        reading:   "48 − □ + 14 = 39　→　48+14=62、62−39",
+        answer:    "23こ"
+      },
+      // E. 桁落とし・繰り下がり
+      {
+        sentence:  "603 − 45 = ____",
+        reading:   "十の位が0 → 百の位から2段くり下がり",
+        answer:    "558"
+      }
+    ]
+  },
+  {
+    name: "間違えた問題（4月分）",
+    isReview: true,
+    cards: [
+      // 4/6① 繰り下がり
+      {
+        sentence:  "736 − 92 = ____",
+        reading:   "E類型：百の位のくり下がりに注意",
+        answer:    "644"
+      },
+      // 4/6③ 3項連続
+      {
+        sentence:  "1050 − 236 + 189 = ____",
+        reading:   "A類型：筆算を2段書く、+189を忘れない",
+        answer:    "1003"
+      },
+      // 4/11③ 3項連続
+      {
+        sentence:  "770 − 146 + 24 = ____",
+        reading:   "A類型：770−146=624、そこに+24",
+        answer:    "648"
+      },
+      // 4/11④ 同数加算
+      {
+        sentence:  "17 + 17 + 17 + 17 = ____",
+        reading:   "B類型：17×4 に直して筆算",
+        answer:    "68"
+      },
+      // 4/12③ 3項連続
+      {
+        sentence:  "827 − 197 − 47 = ____",
+        reading:   "A類型：筆算2段、一気にやらない",
+        answer:    "583"
+      },
+      // 4/12⑦ 繰り返し引き算
+      {
+        sentence:  "500 − 99 − 99 − 99 − 3 = ____",
+        reading:   "A類型：99×3=297、500−297=203、−3",
+        answer:    "200"
+      },
+      // 4/13⑧ ±1ケアレス
+      {
+        sentence:  "135 − 78 − ____ = 26",
+        reading:   "C類型：135−78=57、57−□=26　→　検算必須！",
+        answer:    "31"
+      },
+      // 4/14④ 同数加算
+      {
+        sentence:  "18 + 18 + 18 + 18 = ____",
+        reading:   "B類型：18×4 に直して筆算",
+        answer:    "72"
+      },
+      // 4/15⑦ 3項+□
+      {
+        sentence:  "99 + 98 + 97 + ____ = 300",
+        reading:   "A類型：まず99+98+97=294、300−294",
+        answer:    "6"
+      },
+      // 4/15⑧ 文章題・読み飛ばし
+      {
+        sentence:  "18 − ____ + 33 = 50",
+        reading:   "D類型：18+33=51、51−□=50　式全体を読む！",
+        answer:    "1"
+      }
+    ]
+  }
+];
+
+// ─────────────────────────────────────────
+// SM-2 アルゴリズム
+// ─────────────────────────────────────────
+function sm2Update(state, correct) {
+  var q = correct ? 4 : 1;
+  if (!state) state = { ef: 2.5, interval: 0, rep: 0, dueDate: 0 };
+  if (q < 3) {
+    state.rep = 0;
+    state.interval = 1;
+  } else {
+    if      (state.rep === 0) state.interval = 1;
+    else if (state.rep === 1) state.interval = 6;
+    else                       state.interval = Math.round(state.interval * state.ef);
+    state.rep += 1;
+    var newEf = state.ef + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+    state.ef = Math.max(1.3, newEf);
+  }
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  state.dueDate = today.getTime() + state.interval * 86400000;
+  return state;
+}
+
+var LS_PREFIX = 'sapix_sansu_';
+function cardId(si, ci)  { return LS_PREFIX + si + '_' + ci; }
+function loadState(id)   { try { var r = localStorage.getItem(id); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
+function saveState(id,s) { try { localStorage.setItem(id, JSON.stringify(s)); } catch(e) {} }
+
+function isDue(id) {
+  var st = loadState(id);
+  return !st || st.dueDate <= Date.now();
+}
+function getDueCards() {
+  var r = [];
+  CARD_SETS.forEach(function(set, si) {
+    set.cards.forEach(function(card, ci) {
+      var id = cardId(si, ci);
+      if (isDue(id)) r.push({ card: card, id: id });
+    });
+  });
+  return r;
+}
+function countDueForSet(si) {
+  var n = 0;
+  CARD_SETS[si].cards.forEach(function(_, ci) { if (isDue(cardId(si, ci))) n++; });
+  return n;
+}
+function intervalLabel(iv) {
+  if (iv === 1) return '次回：明日';
+  if (iv < 30)  return '次回：' + iv + '日後';
+  return '次回：約' + Math.round(iv / 30) + 'ヶ月後';
+}
+
+// ─────────────────────────────────────────
+// セリフ
+// ─────────────────────────────────────────
+const PHRASES = {
+  question: ['この式、解けるかな？🔢', 'さあ、挑戦だよ！💪', 'ヒントをよく読んでね！', '集中して！✏️', 'がんばって！'],
+  answer:   ['どうだった？正直に！', 'できた？', 'さあ、どっち？'],
+  ok:       ['やったね！🎉', '完璧！✨', 'すごい！', '正解！🌟', 'ばっちり！'],
+  again:    ['もう少しだよ！💪', 'ヒントをもう一度見て！', '次は必ず！', '繰り返しが大事！'],
+  complete: ['全問クリア！🎉', '計算名人！🌟', '全部解けたね！✨', '100点満点！🎉']
+};
+function randPhrase(t) { var a = PHRASES[t]; return a[Math.floor(Math.random() * a.length)]; }
+function setPhrase(t) {
+  var el = document.getElementById('char-bubble');
+  el.classList.add('changing');
+  setTimeout(function() { el.textContent = randPhrase(t); el.classList.remove('changing'); }, 120);
+}
+
+// ─────────────────────────────────────────
+// State
+// ─────────────────────────────────────────
+var currentSetIndex = -1;
+var deck = [], deckIds = [];
+var done = 0, totalCards = 0, isFlipped = false;
+
+var $select   = document.getElementById('select-screen');
+var $quiz     = document.getElementById('quiz-screen');
+var $complete = document.getElementById('complete-screen');
+function showScreen(el) {
+  [$select, $quiz, $complete].forEach(function(s) { s.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// ─────────────────────────────────────────
+// セット選択
+// ─────────────────────────────────────────
+function renderSetList() {
+  var dueCards = getDueCards();
+  var totalDue = dueCards.length;
+  var dueArea = document.getElementById('due-area');
+
+  if (totalDue > 0) {
+    dueArea.innerHTML =
+      '<div class="due-btn" onclick="startDueMode()">' +
+        '<div class="due-title">📅 今日の復習</div>' +
+        '<div class="due-count-badge">' + totalDue + '問</div>' +
+      '</div>';
+    document.getElementById('select-greeting').textContent = '今日は' + totalDue + '問復習しよう！📚';
+  } else {
+    dueArea.innerHTML = '<div class="due-btn no-due"><div class="due-title">✅ 今日の復習はなし！</div></div>';
+    document.getElementById('select-greeting').textContent = 'よくできてるね！🔢';
+  }
+
+  var list = document.getElementById('set-list');
+  list.innerHTML = '';
+  CARD_SETS.forEach(function(set, i) {
+    var due = countDueForSet(i);
+    var dueBadge = due > 0 ? '<span class="due-badge">' + due + '</span>' : '';
+    var badge = set.isReview ? '⚠️ 復習' : '📖 通常';
+    var div = document.createElement('div');
+    div.className = 'set-item' + (set.isReview ? ' review-set' : '');
+    div.innerHTML =
+      '<div>' +
+        '<div class="name">' + set.name + dueBadge + '</div>' +
+        '<div class="meta">' + badge + '　' + set.cards.length + '問</div>' +
+      '</div><div class="arrow">▶</div>';
+    div.onclick = (function(idx) { return function() { startSet(idx); }; })(i);
+    list.appendChild(div);
+  });
+}
+
+function startDueMode() {
+  var dueCards = getDueCards();
+  if (!dueCards.length) return;
+  currentSetIndex = -1;
+  document.getElementById('current-set-name').textContent = '今日の復習';
+  totalCards = dueCards.length;
+  done = 0;
+  var shuffled = shuffle(dueCards.slice());
+  deck    = shuffled.map(function(d) { return d.card; });
+  deckIds = shuffled.map(function(d) { return d.id; });
+  showScreen($quiz);
+  showCard();
+}
+
+function startSet(idx) {
+  currentSetIndex = idx;
+  var set = CARD_SETS[idx];
+  document.getElementById('current-set-name').textContent = set.name;
+  totalCards = set.cards.length;
+  done = 0;
+  var indices = set.cards.map(function(_, ci) { return ci; });
+  shuffle(indices);
+  deck    = indices.map(function(ci) { return set.cards[ci]; });
+  deckIds = indices.map(function(ci) { return cardId(idx, ci); });
+  showScreen($quiz);
+  showCard();
+}
+
+function retrySet() { if (currentSetIndex >= 0) startSet(currentSetIndex); else startDueMode(); }
+function goHome()   { renderSetList(); showScreen($select); }
+
+// ─────────────────────────────────────────
+// カード表示
+// ─────────────────────────────────────────
+function showCard() {
+  if (!deck.length) {
+    document.getElementById('complete-phrase').textContent = randPhrase('complete');
+    document.getElementById('complete-msg').textContent = totalCards + '問すべて解けました！';
+    showScreen($complete);
+    return;
+  }
+  isFlipped = false;
+  var card = document.getElementById('card');
+  var wasFlipped = card.classList.contains('flipped');
+  var c = deck[0];
+
+  document.getElementById('front-sentence').innerHTML =
+    c.sentence.replace('____', '<span class="blank">&nbsp;&nbsp;&nbsp;</span>');
+  document.getElementById('front-reading').textContent = c.reading;
+  document.getElementById('next-due-label').style.display = 'none';
+  document.getElementById('btn-flip-row').style.display  = 'flex';
+  document.getElementById('btn-judge-row').style.display = 'none';
+  updateProgress();
+  setPhrase('question');
+
+  function setBackContent() {
+    document.getElementById('back-answer').textContent   = c.answer;
+    document.getElementById('back-reading').textContent  = c.reading;
+    document.getElementById('back-sentence').textContent = c.sentence.replace('____', c.answer);
+    var st = loadState(deckIds[0]);
+    if (st && st.interval > 0) {
+      var lbl = document.getElementById('next-due-label');
+      lbl.textContent = intervalLabel(st.interval);
+      lbl.style.display = 'inline-block';
+    }
+  }
+
+  if (wasFlipped) {
+    card.addEventListener('transitionend', function h() {
+      card.removeEventListener('transitionend', h);
+      setBackContent();
+    });
+    card.classList.remove('flipped');
+  } else {
+    card.classList.remove('flipped');
+    setBackContent();
+  }
+}
+
+function flipCard() {
+  if (isFlipped) return;
+  isFlipped = true;
+  document.getElementById('card').classList.add('flipped');
+  document.getElementById('btn-flip-row').style.display  = 'none';
+  document.getElementById('btn-judge-row').style.display = 'flex';
+  setPhrase('answer');
+}
+
+function judgeCard(ok) {
+  var id = deckIds[0];
+  var newState = sm2Update(loadState(id), ok);
+  saveState(id, newState);
+
+  var bubble = document.getElementById('char-bubble');
+  bubble.textContent = (ok ? randPhrase('ok') : randPhrase('again')) + '　' + intervalLabel(newState.interval);
+
+  var lbl = document.getElementById('next-due-label');
+  lbl.textContent = intervalLabel(newState.interval);
+  lbl.style.display = 'inline-block';
+
+  var current = deck.shift();
+  deckIds.shift();
+  if (ok) {
+    done++;
+  } else {
+    var at = Math.min(2, deck.length);
+    deck.splice(at, 0, current);
+    deckIds.splice(at, 0, id);
+  }
+  setTimeout(showCard, 700);
+}
+
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+function updateProgress() {
+  document.getElementById('progress-num').textContent   = done;
+  document.getElementById('progress-total').textContent = totalCards;
+  document.getElementById('progress-fill').style.width  =
+    (totalCards > 0 ? done / totalCards * 100 : 0) + '%';
+}
+
+// ─────────────────────────────────────────
+// 初期化
+// ─────────────────────────────────────────
+renderSetList();
+</script>
+</body>
+</html>
