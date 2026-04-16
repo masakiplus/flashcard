@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>SAPIX 漢字フラッシュカード</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    background: #FDF8F0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── Back link ── */
+  .back-link {
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 6px;
+  }
+  .back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #A89580;
+    text-decoration: none;
+    padding: 4px 0;
+  }
+  .back-link a:active { opacity: 0.6; }
+
+  /* ── Header ── */
+  .header {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 18px;
+    color: #4A3728;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .header .set-name {
+    font-size: 13px;
+    color: #8B7355;
+    margin-bottom: 6px;
+  }
+
+  /* ── Character ── */
+  .char-area {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .char-icon {
+    width: 72px;
+    flex-shrink: 0;
+  }
+  .char-bubble {
+    background: white;
+    border-radius: 16px 16px 16px 4px;
+    padding: 11px 15px;
+    font-size: 14px;
+    color: #4A3728;
+    box-shadow: 0 2px 10px rgba(74,55,40,0.12);
+    flex: 1;
+    font-weight: 500;
+    line-height: 1.5;
+    position: relative;
+    transition: opacity 0.25s ease;
+  }
+  .char-bubble.changing { opacity: 0; }
+  /* 吹き出しの三角 */
+  .char-bubble::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    bottom: 14px;
+    border: 9px solid transparent;
+    border-right-color: white;
+    border-left: none;
+    filter: drop-shadow(-2px 1px 2px rgba(74,55,40,0.08));
+  }
+
+  /* ── Progress ── */
+  .progress-wrap {
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 14px;
+  }
+  .progress-text {
+    font-size: 13px;
+    color: #8B7355;
+    text-align: right;
+    margin-bottom: 4px;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #E8DFD3;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7CB342, #558B2F);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Card ── */
+  .card-container {
+    width: 100%;
+    max-width: 480px;
+    perspective: 800px;
+    margin-bottom: 16px;
+  }
+  .card {
+    width: 100%;
+    min-height: 220px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(74,55,40,0.10), 0 1px 3px rgba(74,55,40,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 24px;
+  }
+  .card-front .sentence {
+    font-size: 20px;
+    line-height: 1.7;
+    color: #3E2C1C;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .card-front .sentence .blank {
+    display: inline-block;
+    border-bottom: 3px solid #C2956B;
+    min-width: 3em;
+    margin: 0 2px;
+    vertical-align: baseline;
+  }
+  .card-front .reading {
+    font-size: 22px;
+    color: #C2956B;
+    font-weight: 600;
+    background: #FFF7ED;
+    padding: 6px 20px;
+    border-radius: 20px;
+  }
+
+  .card-back {
+    transform: rotateY(180deg);
+  }
+  .card-back .answer {
+    font-size: 54px;
+    font-weight: 700;
+    color: #3E2C1C;
+    margin-bottom: 6px;
+  }
+  .card-back .reading-small {
+    font-size: 16px;
+    color: #8B7355;
+    margin-bottom: 4px;
+  }
+  .card-back .sentence-small {
+    font-size: 14px;
+    color: #A89580;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    width: 100%;
+    max-width: 480px;
+  }
+  .btn {
+    flex: 1;
+    min-height: 52px;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-again {
+    background: #FFEBEE;
+    color: #C62828;
+    box-shadow: 0 2px 6px rgba(198,40,40,0.12);
+  }
+  .btn-ok {
+    background: #E8F5E9;
+    color: #2E7D32;
+    box-shadow: 0 2px 6px rgba(46,125,50,0.12);
+  }
+  .btn-flip {
+    background: #FFF3E0;
+    color: #E65100;
+    box-shadow: 0 2px 6px rgba(230,81,0,0.12);
+  }
+
+  /* ── Set Selection Screen ── */
+  .screen { display: none; width: 100%; max-width: 480px; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; }
+
+  /* セット選択画面のキャラクター */
+  .select-char-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .select-char-area .char-icon-big {
+    width: 90px;
+    margin-bottom: 10px;
+  }
+  .select-greeting {
+    background: white;
+    border-radius: 20px;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4A3728;
+    box-shadow: 0 2px 10px rgba(74,55,40,0.12);
+    text-align: center;
+  }
+
+  .set-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .set-item {
+    width: 100%;
+    padding: 16px 20px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 1px 6px rgba(74,55,40,0.08);
+    cursor: pointer;
+    transition: transform 0.1s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .set-item:active { transform: scale(0.98); }
+  .set-item .name { font-size: 16px; color: #3E2C1C; font-weight: 600; }
+  .set-item .meta { font-size: 13px; color: #8B7355; margin-top: 2px; }
+  .set-item .arrow { font-size: 18px; color: #C2956B; }
+  .set-item.review-set { background: #FFF8E1; }
+  .set-item.review-set .name { color: #B45309; }
+
+  /* ── Complete ── */
+  .complete-screen {
+    text-align: center;
+    padding-top: 20px;
+  }
+  .complete-char {
+    width: 100px;
+    margin: 0 auto 12px;
+  }
+  .complete-screen h2 { font-size: 26px; color: #2E7D32; margin-bottom: 6px; }
+  .complete-screen .complete-msg-txt { font-size: 15px; color: #8B7355; margin-bottom: 8px; }
+  .complete-phrase {
+    font-size: 18px;
+    font-weight: 600;
+    color: #C2956B;
+    background: white;
+    border-radius: 16px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 8px rgba(74,55,40,0.10);
+    margin-bottom: 24px;
+  }
+  .btn-back {
+    background: #FFF3E0;
+    color: #E65100;
+    padding: 14px 36px;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-retry {
+    background: #E8F5E9;
+    color: #2E7D32;
+    padding: 14px 36px;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== うさぎSVG テンプレート（再利用） ===== -->
+<svg style="display:none">
+  <symbol id="hana-chan" viewBox="0 0 80 96">
+    <!-- 耳（左）-->
+    <ellipse cx="22" cy="26" rx="12" ry="28" fill="white" stroke="#DDBBD0" stroke-width="2"/>
+    <ellipse cx="22" cy="26" rx="7" ry="21" fill="#FFB3D0"/>
+    <!-- 耳（右）-->
+    <ellipse cx="58" cy="26" rx="12" ry="28" fill="white" stroke="#DDBBD0" stroke-width="2"/>
+    <ellipse cx="58" cy="26" rx="7" ry="21" fill="#FFB3D0"/>
+    <!-- 顔 -->
+    <circle cx="40" cy="65" r="30" fill="white" stroke="#DDBBD0" stroke-width="2"/>
+    <!-- 目（左）-->
+    <circle cx="28" cy="59" r="8" fill="#F48FB1"/>
+    <circle cx="28" cy="58" r="5" fill="white"/>
+    <circle cx="29" cy="57" r="2.5" fill="#3E2C1C"/>
+    <circle cx="30" cy="56" r="1" fill="white"/>
+    <!-- 目（右）-->
+    <circle cx="52" cy="59" r="8" fill="#F48FB1"/>
+    <circle cx="52" cy="58" r="5" fill="white"/>
+    <circle cx="53" cy="57" r="2.5" fill="#3E2C1C"/>
+    <circle cx="54" cy="56" r="1" fill="white"/>
+    <!-- ほっぺ -->
+    <circle cx="17" cy="68" r="8" fill="#FFB3D0" opacity="0.65"/>
+    <circle cx="63" cy="68" r="8" fill="#FFB3D0" opacity="0.65"/>
+    <!-- 鼻 -->
+    <ellipse cx="40" cy="68" rx="5" ry="3.5" fill="#F48FB1"/>
+    <!-- 口 -->
+    <path d="M34 74 Q40 80 46 74" stroke="#C06080" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M40 68 L40 74" stroke="#C06080" stroke-width="1.5" fill="none"/>
+  </symbol>
+</svg>
+
+<!-- ===== Set Selection Screen ===== -->
+<div id="select-screen" class="screen active">
+  <div class="back-link"><a href="../">← 科目選択に戻る</a></div>
+  <div class="header">
+    <h1>SAPIX 漢字フラッシュカード</h1>
+  </div>
+  <div class="select-char-area">
+    <div class="char-icon-big">
+      <svg viewBox="0 0 80 96" width="90" height="108"><use href="#hana-chan"/></svg>
+    </div>
+    <div class="select-greeting">セットを選んでね！🌸</div>
+  </div>
+  <div id="set-list" class="set-list"></div>
+</div>
+
+<!-- ===== Quiz Screen ===== -->
+<div id="quiz-screen" class="screen">
+  <div class="header">
+    <h1>SAPIX 漢字フラッシュカード</h1>
+    <p id="current-set-name" class="set-name"></p>
+  </div>
+
+  <!-- キャラクター + 吹き出し -->
+  <div class="char-area">
+    <div class="char-icon">
+      <svg viewBox="0 0 80 96" width="72" height="86"><use href="#hana-chan"/></svg>
+    </div>
+    <div class="char-bubble" id="char-bubble">これ、わかるかな〜？✨</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-text"><span id="progress-num">0</span> / <span id="progress-total">0</span></div>
+    <div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="card-container">
+    <div id="card" class="card" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div id="front-sentence" class="sentence"></div>
+        <div id="front-reading" class="reading"></div>
+      </div>
+      <div class="card-face card-back">
+        <div id="back-answer" class="answer"></div>
+        <div id="back-reading" class="reading-small"></div>
+        <div id="back-sentence" class="sentence-small"></div>
+      </div>
+    </div>
+  </div>
+  <div id="btn-flip-row" class="btn-row">
+    <button class="btn btn-flip" onclick="flipCard()">こたえを見る</button>
+  </div>
+  <div id="btn-judge-row" class="btn-row" style="display:none;">
+    <button class="btn btn-again" onclick="judgeCard(false)">もう一回</button>
+    <button class="btn btn-ok" onclick="judgeCard(true)">覚えた！</button>
+  </div>
+</div>
+
+<!-- ===== Complete Screen ===== -->
+<div id="complete-screen" class="screen complete-screen">
+  <div class="complete-char">
+    <svg viewBox="0 0 80 96" width="100" height="120"><use href="#hana-chan"/></svg>
+  </div>
+  <h2>全問クリア！🎉</h2>
+  <p class="complete-msg-txt" id="complete-msg"></p>
+  <div class="complete-phrase" id="complete-phrase">よくがんばったね！🌟</div>
+  <div>
+    <button class="btn-retry" onclick="retrySet()">もう一回やる</button>
+    <button class="btn-back" onclick="goHome()">セット選択に戻る</button>
+  </div>
+</div>
+
+<script>
+// ╔══════════════════════════════════════════════════════════╗
+// ║  カードデータ — 新しい週はここにオブジェクトを追加      ║
+// ╚══════════════════════════════════════════════════════════╝
+const CARD_SETS = [
+  {
+    name: "2026年4月 第3週",
+    isReview: false,
+    cards: [
+      { sentence: "____をもって最後までやりとげる",       reading: "せきにん",      answer: "責任"   },
+      { sentence: "家の庭に大きな____がある",             reading: "いし",          answer: "石"     },
+      { sentence: "テニスの____で優勝をめざす",           reading: "たいかい",      answer: "大会"   },
+      { sentence: "____の国々の文化を学ぶ",               reading: "せかい",        answer: "世界"   },
+      { sentence: "博物館で恐竜の____を見た",             reading: "かせき",        answer: "化石"   },
+      { sentence: "____を計画的にすごす",                 reading: "いっしゅうかん", answer: "一週間"  },
+      { sentence: "バットでボールを力強く____",           reading: "うつ",          answer: "打つ"   },
+      { sentence: "コップに____を入れて飲み物を冷やす",   reading: "こおり",        answer: "氷"     },
+      { sentence: "____歩道で道路を安全にわたる",         reading: "おうだん",      answer: "横断"   },
+      { sentence: "明日の天気を____する",                 reading: "よそう",        answer: "予想"   },
+      { sentence: "友だちとの____を守る",                 reading: "やくそく",      answer: "約束"   },
+      { sentence: "新学期が始まって気持ちを____にする",   reading: "あらた",        answer: "新た"   }
+    ]
+  },
+  {
+    name: "復習：まちがえた問題",
+    isReview: true,
+    cards: [
+      // うでだめし1 まちがえた漢字
+      { sentence: "____に役立つ人になりたい",             reading: "よ",            answer: "世"     },
+      { sentence: "広い世____を旅する",                   reading: "かい",          answer: "界"     },
+      { sentence: "犬の____は高い",                       reading: "はな",          answer: "鼻"     },
+      { sentence: "お礼の____ものを贈る",                 reading: "しな",          answer: "品"     },
+      // うでだめし3 本問（間違えた漢字に赤丸）
+      { sentence: "遠足の____を確かめる",                 reading: "もちもの",      answer: "持ち物"  },
+      { sentence: "____が真っ青になる",                   reading: "がんめん",      answer: "顔面"   },
+      { sentence: "____な食べ方をしてはいけない",         reading: "げひん",        answer: "下品"   },
+      { sentence: "たぬきが人を____",                     reading: "ばかす",        answer: "化かす"  },
+      { sentence: "____お茶を飲む",                       reading: "あたたかい",    answer: "温かい"  },
+      { sentence: "____に汗をかく",                       reading: "はなさき",      answer: "鼻先"   },
+      // うでだめし3 まちがえた漢字
+      { sentence: "北極の____が減少する",                 reading: "かいひょう",    answer: "海氷"   },
+      { sentence: "立身____の願いを込める",               reading: "しゅっせ",      answer: "出世"   },
+      { sentence: "____文を読む",                         reading: "ものがたり",    answer: "物語"   },
+      { sentence: "座る____を探す",                       reading: "ばしょ",        answer: "場所"   },
+      { sentence: "____の成り立ちを知る",                 reading: "かんじ",        answer: "漢字"   }
+    ]
+  }
+];
+
+// ── セリフパターン ──
+const PHRASES = {
+  question: [
+    'これ、わかるかな〜？✨',
+    'さあ、挑戦だよ！💪',
+    'ヒントをよく見てね！',
+    '読めるかな？🌟',
+    'がんばって！'
+  ],
+  answer: [
+    'どうだった？正直に！',
+    '覚えてた？',
+    '答えを確認しよう！',
+    'さあ、どっち？'
+  ],
+  ok: [
+    'やったね！🎉',
+    '完璧！✨',
+    'すごい！さすが！',
+    '正解！🌟',
+    'ばっちり！'
+  ],
+  again: [
+    'もう少しだよ！💪',
+    '一緒に練習しよう！',
+    '次は覚えようね！',
+    '繰り返しが大事！'
+  ],
+  complete: [
+    'よくがんばったね！🌟',
+    '全問正解！さすが！🎊',
+    '完璧だよ！すごい！✨',
+    '100点満点！🎉'
+  ]
+};
+
+function randPhrase(type) {
+  var arr = PHRASES[type];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function setPhrase(type) {
+  var el = document.getElementById('char-bubble');
+  el.classList.add('changing');
+  setTimeout(function() {
+    el.textContent = randPhrase(type);
+    el.classList.remove('changing');
+  }, 120);
+}
+
+// ── State ──
+var currentSetIndex = -1;
+var deck = [];
+var done = 0;
+var totalCards = 0;
+var isFlipped = false;
+
+// ── Screens ──
+var $select   = document.getElementById('select-screen');
+var $quiz     = document.getElementById('quiz-screen');
+var $complete = document.getElementById('complete-screen');
+
+function showScreen(el) {
+  [$select, $quiz, $complete].forEach(function(s) { s.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// ── Set Selection ──
+function renderSetList() {
+  var list = document.getElementById('set-list');
+  list.innerHTML = '';
+  CARD_SETS.forEach(function(set, i) {
+    var div = document.createElement('div');
+    div.className = 'set-item' + (set.isReview ? ' review-set' : '');
+    var badge = set.isReview ? '⚠️ 復習' : '📖 通常';
+    div.innerHTML =
+      '<div>' +
+        '<div class="name">' + set.name + '</div>' +
+        '<div class="meta">' + badge + '　' + set.cards.length + '問</div>' +
+      '</div>' +
+      '<div class="arrow">▶</div>';
+    div.onclick = (function(idx) { return function() { startSet(idx); }; })(i);
+    list.appendChild(div);
+  });
+}
+
+// ── Shuffle (Fisher-Yates) ──
+function shuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+// ── Start a Set ──
+function startSet(idx) {
+  currentSetIndex = idx;
+  var set = CARD_SETS[idx];
+  document.getElementById('current-set-name').textContent = set.name;
+  totalCards = set.cards.length;
+  done = 0;
+  deck = shuffle(set.cards.slice());
+  showScreen($quiz);
+  showCard();
+}
+
+function retrySet() { startSet(currentSetIndex); }
+function goHome()   { showScreen($select); }
+
+// ── Card Display ──
+function showCard() {
+  if (deck.length === 0) {
+    var phrase = randPhrase('complete');
+    document.getElementById('complete-phrase').textContent = phrase;
+    document.getElementById('complete-msg').textContent =
+      totalCards + '問すべて覚えました！';
+    showScreen($complete);
+    return;
+  }
+  isFlipped = false;
+  var card = document.getElementById('card');
+  var wasFlipped = card.classList.contains('flipped');
+
+  var c = deck[0];
+  document.getElementById('front-sentence').innerHTML =
+    c.sentence.replace('____', '<span class="blank">&nbsp;</span>');
+  document.getElementById('front-reading').textContent = c.reading;
+
+  document.getElementById('btn-flip-row').style.display = 'flex';
+  document.getElementById('btn-judge-row').style.display = 'none';
+
+  updateProgress();
+  setPhrase('question');
+
+  function setBackContent() {
+    document.getElementById('back-answer').textContent = c.answer;
+    document.getElementById('back-reading').textContent = c.reading;
+    document.getElementById('back-sentence').textContent =
+      c.sentence.replace('____', c.answer);
+  }
+
+  if (wasFlipped) {
+    card.addEventListener('transitionend', function handler() {
+      card.removeEventListener('transitionend', handler);
+      setBackContent();
+    });
+    card.classList.remove('flipped');
+  } else {
+    card.classList.remove('flipped');
+    setBackContent();
+  }
+}
+
+function flipCard() {
+  if (isFlipped) return;
+  isFlipped = true;
+  document.getElementById('card').classList.add('flipped');
+  document.getElementById('btn-flip-row').style.display = 'none';
+  document.getElementById('btn-judge-row').style.display = 'flex';
+  setPhrase('answer');
+}
+
+function judgeCard(ok) {
+  setPhrase(ok ? 'ok' : 'again');
+  var current = deck.shift();
+  if (ok) {
+    done++;
+  } else {
+    var insertAt = Math.min(2, deck.length);
+    deck.splice(insertAt, 0, current);
+  }
+  // セリフを少し見せてから次のカードへ
+  setTimeout(showCard, 600);
+}
+
+function updateProgress() {
+  document.getElementById('progress-num').textContent = done;
+  document.getElementById('progress-total').textContent = totalCards;
+  var pct = totalCards > 0 ? (done / totalCards) * 100 : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ── Init ──
+renderSetList();
+</script>
+</body>
+</html>
