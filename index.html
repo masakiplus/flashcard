@@ -392,24 +392,37 @@ function showCard() {
   }
   isFlipped = false;
   var card = document.getElementById('card');
-  card.classList.remove('flipped');
+  var wasFlipped = card.classList.contains('flipped');
 
   var c = deck[0];
-  // Front: sentence with blank
+  // Front: sentence with blank（表面は即更新OK）
   document.getElementById('front-sentence').innerHTML =
     c.sentence.replace('____', '<span class="blank">&nbsp;</span>');
   document.getElementById('front-reading').textContent = c.reading;
-
-  // Back
-  document.getElementById('back-answer').textContent = c.answer;
-  document.getElementById('back-reading').textContent = c.reading;
-  document.getElementById('back-sentence').textContent =
-    c.sentence.replace('____', c.answer);
 
   document.getElementById('btn-flip-row').style.display = 'flex';
   document.getElementById('btn-judge-row').style.display = 'none';
 
   updateProgress();
+
+  function setBackContent() {
+    document.getElementById('back-answer').textContent = c.answer;
+    document.getElementById('back-reading').textContent = c.reading;
+    document.getElementById('back-sentence').textContent =
+      c.sentence.replace('____', c.answer);
+  }
+
+  if (wasFlipped) {
+    // アニメーション完了後に裏面を更新して「一瞬見え」を防ぐ
+    card.addEventListener('transitionend', function handler() {
+      card.removeEventListener('transitionend', handler);
+      setBackContent();
+    });
+    card.classList.remove('flipped');
+  } else {
+    card.classList.remove('flipped');
+    setBackContent();
+  }
 }
 
 function flipCard() {
